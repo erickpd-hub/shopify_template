@@ -1,0 +1,114 @@
+{%- liquid
+  assign products_per_page = section.settings.products_per_page
+-%}
+
+{% paginate collection.products by products_per_page %}
+<section class="main-collection section-spacing">
+  <div class="container">
+    <div class="main-collection__header">
+      <h1 class="main-collection__title">{{ collection.title }}</h1>
+      {% if collection.description != blank %}
+        <div class="main-collection__description">
+          {{ collection.description }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="main-collection__grid">
+      {% if collection.products.size > 0 %}
+        {% for product in collection.products %}
+          {% render 'product-card', product: product %}
+        {% endfor %}
+      {% else %}
+        <p>No products found in this collection.</p>
+      {% endif %}
+    </div>
+
+    {% if paginate.pages > 1 %}
+      <div class="pagination">
+        {{ paginate | default_pagination }}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  .main-collection__header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .main-collection__title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .main-collection__description {
+    font-size: 1.125rem;
+    color: #a1a1aa;
+    max-width: 60ch;
+    margin: 0 auto;
+  }
+
+  .main-collection__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .main-collection__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .main-collection__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .pagination {
+    margin-top: 3rem;
+    text-align: center;
+  }
+
+  .pagination a {
+    color: white;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    border-radius: 0.5rem;
+    margin: 0 0.25rem;
+  }
+
+  .pagination a:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .pagination .current {
+    background: #fbbf24;
+    color: #18181b;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    margin: 0 0.25rem;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Main Collection",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 8,
+      "max": 24,
+      "step": 4,
+      "default": 12
+    }
+  ]
+}
+{% endschema %}
+{% endpaginate %}

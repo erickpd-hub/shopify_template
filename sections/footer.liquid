@@ -1,0 +1,393 @@
+{{ 'component-footer.css' | asset_url | stylesheet_tag }}
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__content">
+      <!-- Brand Column -->
+      <div class="footer__column">
+        <div class="footer__brand">
+          <div class="footer__logo">
+            {% if section.settings.footer_logo != blank %}
+              <img 
+                src="{{ section.settings.footer_logo | image_url: width: 150 }}"
+                alt="{{ shop.name }}"
+                width="150"
+                loading="lazy"
+              >
+            {% else %}
+              <div class="logo-icon">
+                <span>{{ section.settings.logo_letter }}</span>
+              </div>
+              <span class="logo-name">{{ section.settings.store_name | default: shop.name }}</span>
+            {% endif %}
+          </div>
+          
+          {% if section.settings.footer_description != blank %}
+            <p class="footer__description">{{ section.settings.footer_description }}</p>
+          {% endif %}
+
+          <!-- Contact Info -->
+          <div class="footer__contact">
+            {% if section.settings.email != blank %}
+              <div class="footer__contact-item">
+                {% render 'icon-email' %}
+                <a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>
+              </div>
+            {% endif %}
+            
+            {% if section.settings.phone != blank %}
+              <div class="footer__contact-item">
+                {% render 'icon-phone' %}
+                <a href="tel:{{ section.settings.phone }}">{{ section.settings.phone }}</a>
+              </div>
+            {% endif %}
+            
+            {% if section.settings.address != blank %}
+              <div class="footer__contact-item">
+                {% render 'icon-location' %}
+                <span>{{ section.settings.address }}</span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Dynamic Columns from Blocks -->
+      {% for block in section.blocks %}
+        {% if block.type == 'link_list' %}
+          <div class="footer__column" {{ block.shopify_attributes }}>
+            <h4 class="footer__title">{{ block.settings.heading }}</h4>
+            <ul class="footer__list">
+              {% for i in (1..6) %}
+                {% assign link_label = 'link_label_' | append: i %}
+                {% assign link_url = 'link_' | append: i %}
+                {% if block.settings[link_label] != blank %}
+                  <li>
+                    <a href="{{ block.settings[link_url] }}">
+                      {{ block.settings[link_label] }}
+                    </a>
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="footer__bottom">
+      <p class="footer__copyright">
+        &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. {{ section.settings.copyright_text }}
+      </p>
+      
+      {% if section.settings.show_payment_icons %}
+        <div class="footer__payment">
+          {% render 'payment-icons' %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: rgba(15, 23, 42, 0.8);
+    border-top: 1px solid rgba(251, 191, 36, 0.2);
+    margin-top: 5rem;
+    padding: 3rem 0;
+  }
+
+  .footer__content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  @media (min-width: 768px) {
+    .footer__content {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .footer__content {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .footer__brand {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .footer__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .footer__description {
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.6;
+  }
+
+  .footer__contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .footer__contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.875rem;
+  }
+
+  .footer__contact-item svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .footer__contact-item a {
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer__contact-item a:hover {
+    color: #fbbf24;
+  }
+
+  .footer__title {
+    color: white;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+  }
+
+  .footer__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .footer__list a {
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    transition: color 0.2s;
+    font-size: 0.875rem;
+  }
+
+  .footer__list a:hover {
+    color: #fbbf24;
+  }
+
+  .footer__bottom {
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  @media (min-width: 768px) {
+    .footer__bottom {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
+  .footer__copyright {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.875rem;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "footer_logo",
+      "label": "Footer Logo"
+    },
+    {
+      "type": "text",
+      "id": "logo_letter",
+      "label": "Logo Letter",
+      "default": "A"
+    },
+    {
+      "type": "text",
+      "id": "store_name",
+      "label": "Store Name",
+      "default": "AROMA"
+    },
+    {
+      "type": "textarea",
+      "id": "footer_description",
+      "label": "Description",
+      "default": "Fragancias masculinas de lujo para cada estación del año"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email",
+      "default": "contacto@aroma.com"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone",
+      "default": "+34 900 123 456"
+    },
+    {
+      "type": "text",
+      "id": "address",
+      "label": "Address",
+      "default": "Madrid, España"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright Text",
+      "default": "Todos los derechos reservados."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "Show Payment Icons",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link_list",
+      "name": "Link List",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Quick Links"
+        },
+        {
+          "type": "text",
+          "id": "link_label_1",
+          "label": "Link 1 Label"
+        },
+        {
+          "type": "url",
+          "id": "link_1",
+          "label": "Link 1 URL"
+        },
+        {
+          "type": "text",
+          "id": "link_label_2",
+          "label": "Link 2 Label"
+        },
+        {
+          "type": "url",
+          "id": "link_2",
+          "label": "Link 2 URL"
+        },
+        {
+          "type": "text",
+          "id": "link_label_3",
+          "label": "Link 3 Label"
+        },
+        {
+          "type": "url",
+          "id": "link_3",
+          "label": "Link 3 URL"
+        },
+        {
+          "type": "text",
+          "id": "link_label_4",
+          "label": "Link 4 Label"
+        },
+        {
+          "type": "url",
+          "id": "link_4",
+          "label": "Link 4 URL"
+        },
+        {
+          "type": "text",
+          "id": "link_label_5",
+          "label": "Link 5 Label"
+        },
+        {
+          "type": "url",
+          "id": "link_5",
+          "label": "Link 5 URL"
+        },
+        {
+          "type": "text",
+          "id": "link_label_6",
+          "label": "Link 6 Label"
+        },
+        {
+          "type": "url",
+          "id": "link_6",
+          "label": "Link 6 URL"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "link_list",
+        "settings": {
+          "heading": "Colecciones",
+          "link_label_1": "Primavera 🌸",
+          "link_1": "/collections/primavera",
+          "link_label_2": "Verano ☀️",
+          "link_2": "/collections/verano",
+          "link_label_3": "Otoño 🍂",
+          "link_3": "/collections/otono",
+          "link_label_4": "Invierno ❄️",
+          "link_4": "/collections/invierno"
+        }
+      },
+      {
+        "type": "link_list",
+        "settings": {
+          "heading": "Comprar",
+          "link_label_1": "Nueva Colección",
+          "link_1": "/collections/nuevos",
+          "link_label_2": "Ofertas",
+          "link_2": "/collections/ofertas",
+          "link_label_3": "Todos los Productos",
+          "link_3": "/collections/all"
+        }
+      },
+      {
+        "type": "link_list",
+        "settings": {
+          "heading": "Ayuda",
+          "link_label_1": "Contacto",
+          "link_1": "/pages/contacto",
+          "link_label_2": "Envíos",
+          "link_2": "/pages/envios",
+          "link_label_3": "Devoluciones",
+          "link_3": "/pages/devoluciones",
+          "link_label_4": "FAQ",
+          "link_4": "/pages/faq"
+        }
+      }
+    ]
+  }
+}
+{% endschema %}

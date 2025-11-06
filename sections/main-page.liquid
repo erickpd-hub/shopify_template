@@ -1,0 +1,43 @@
+<section class="main-page section-spacing">
+  <div class="container">
+    <div class="main-page__header">
+      <h1 class="main-page__title">{{ page.title }}</h1>
+    </div>
+    <div class="main-page__content">
+      {{ page.content }}
+    </div>
+  </div>
+</section>
+
+<style>
+  .main-page__header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .main-page__title {
+    font-size: 2.5rem;
+  }
+
+  .main-page__content {
+    max-width: 80ch;
+    margin: 0 auto;
+    color: #a1a1aa;
+  }
+
+  .main-page__content a {
+    color: #fbbf24;
+    text-decoration: none;
+  }
+
+  .main-page__content a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Main Page",
+  "settings": []
+}
+{% endschema %}

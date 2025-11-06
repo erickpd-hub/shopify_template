@@ -1,0 +1,58 @@
+{% comment %}
+  Renders a placeholder product card when no products are available
+{% endcomment %}
+
+<div class="product-card product-card--placeholder">
+  <div class="product-card__link">
+    <div class="product-card__image-wrapper">
+      {{ 'product-1' | placeholder_svg_tag: 'product-card__image product-card__image--placeholder' }}
+    </div>
+
+    <div class="product-card__info">
+      <div class="product-card__vendor placeholder-text">Brand Name</div>
+      <h3 class="product-card__title placeholder-text">Product Title</h3>
+      <div class="product-card__type placeholder-text">Product Type</div>
+      
+      <div class="product-card__price-wrapper">
+        <div class="product-card__prices">
+          <span class="product-card__price placeholder-text">€99.99</span>
+        </div>
+        
+        <div class="product-card__cart-button placeholder-button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="9" cy="21" r="1"/>
+            <circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .product-card--placeholder {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .placeholder-text {
+    background: rgba(255, 255, 255, 0.1);
+    color: transparent;
+    border-radius: 0.25rem;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .placeholder-button {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+</style>

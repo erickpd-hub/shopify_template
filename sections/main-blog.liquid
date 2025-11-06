@@ -1,0 +1,128 @@
+{%- paginate blog.articles by section.settings.articles_per_page -%}
+<section class="main-blog section-spacing">
+  <div class="container">
+    <div class="main-blog__header">
+      <h1 class="main-blog__title">{{ blog.title }}</h1>
+    </div>
+
+    <div class="main-blog__grid">
+      {% for article in blog.articles %}
+        <div class="article-card">
+          {% if article.image %}
+            <a href="{{ article.url }}" class="article-card__image-link">
+              <img src="{{ article.image | img_url: 'medium' }}" alt="{{ article.image.alt | escape }}" class="article-card__image" width="{{ article.image.width }}" height="{{ article.image.height }}">
+            </a>
+          {% endif %}
+          <div class="article-card__content">
+            <h2 class="article-card__title"><a href="{{ article.url }}">{{ article.title }}</a></h2>
+            <p class="article-card__excerpt">{{ article.excerpt_or_content | strip_html | truncate: 150 }}</p>
+            <a href="{{ article.url }}" class="article-card__read-more">Read More</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if paginate.pages > 1 %}
+      <div class="pagination">
+        {{ paginate | default_pagination }}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  .main-blog__header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .main-blog__title {
+    font-size: 2.5rem;
+  }
+
+  .main-blog__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .main-blog__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .main-blog__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .article-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .article-card__image {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .article-card__content {
+    padding: 1.5rem;
+  }
+
+  .article-card__title {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .article-card__title a {
+    color: white;
+    text-decoration: none;
+  }
+
+  .article-card__title a:hover {
+    color: #fbbf24;
+  }
+
+  .article-card__excerpt {
+    color: #a1a1aa;
+    margin-bottom: 1rem;
+  }
+
+  .article-card__read-more {
+    color: #fbbf24;
+    text-decoration: none;
+  }
+
+  .article-card__read-more:hover {
+    text-decoration: underline;
+  }
+
+  .pagination {
+    margin-top: 3rem;
+    text-align: center;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Main Blog",
+  "settings": [
+    {
+      "type": "range",
+      "id": "articles_per_page",
+      "label": "Articles per page",
+      "min": 3,
+      "max": 12,
+      "step": 3,
+      "default": 6
+    }
+  ]
+}
+{% endschema %}
+{%- endpaginate -%}

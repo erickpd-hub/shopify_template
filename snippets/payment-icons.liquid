@@ -1,0 +1,29 @@
+{% comment %}
+  Renders payment method icons
+{% endcomment %}
+
+<div class="payment-icons">
+  {% for type in shop.enabled_payment_types %}
+    {{ type | payment_type_svg_tag: class: 'payment-icon' }}
+  {% endfor %}
+</div>
+
+<style>
+  .payment-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .payment-icon {
+    height: 24px;
+    width: auto;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+
+  .payment-icon:hover {
+    opacity: 1;
+  }
+</style>

@@ -1,0 +1,440 @@
+{% comment %}
+  Renders cart drawer
+
+  Usage:
+  {% render 'cart-drawer' %}
+{% endcomment %}
+
+<div class="cart-drawer__header">
+  <div class="cart-drawer__title-wrapper">
+    <div class="cart-drawer__count">{{ cart.item_count }}</div>
+    <h2 class="cart-drawer__title">Carrito de Compras</h2>
+  </div>
+  <button type="button" class="cart-drawer__close" data-cart-close aria-label="Close cart">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <path d="M18 6L6 18M6 6l12 12"/>
+    </svg>
+  </button>
+</div>
+
+<div class="cart-drawer__content">
+  {% if cart.item_count > 0 %}
+    <div class="cart-drawer__items" data-cart-items>
+      {% for item in cart.items %}
+        <div class="cart-item" data-cart-item="{{ item.key }}">
+          <div class="cart-item__image">
+            {% if item.image %}
+              <img
+                src="{{ item.image | image_url: width: 100 }}"
+                alt="{{ item.image.alt | escape }}"
+                width="80"
+                height="107"
+                loading="lazy"
+              >
+            {% else %}
+              {{ 'product-1' | placeholder_svg_tag }}
+            {% endif %}
+          </div>
+
+          <div class="cart-item__details">
+            <div class="cart-item__header">
+              <div>
+                {% if item.product.vendor %}
+                  <div class="cart-item__vendor">{{ item.product.vendor }}</div>
+                {% endif %}
+                <h4 class="cart-item__title">{{ item.product.title }}</h4>
+              </div>
+              <button 
+                type="button" 
+                class="cart-item__remove"
+                data-cart-remove="{{ item.key }}"
+                aria-label="Remove {{ item.product.title }}"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="cart-item__footer">
+              <div class="cart-item__quantity">
+                <button 
+                  type="button" 
+                  class="cart-item__quantity-btn"
+                  data-cart-decrease="{{ item.key }}"
+                  {% if item.quantity <= 1 %}disabled{% endif %}
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M5 12h14"/>
+                  </svg>
+                </button>
+                <span class="cart-item__quantity-value">{{ item.quantity }}</span>
+                <button 
+                  type="button" 
+                  class="cart-item__quantity-btn"
+                  data-cart-increase="{{ item.key }}"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 5v14M5 12h14"/>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="cart-item__price">
+                {{ item.final_line_price | money }}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="cart-drawer__footer">
+      <div class="cart-drawer__totals">
+        <div class="cart-drawer__subtotal">
+          <span>Subtotal</span>
+          <span data-cart-subtotal>{{ cart.total_price | money }}</span>
+        </div>
+        <div class="cart-drawer__shipping">
+          <span>Envío</span>
+          <span>€10.00</span>
+        </div>
+        <div class="cart-drawer__separator"></div>
+        <div class="cart-drawer__total">
+          <span>Total</span>
+          <span class="cart-drawer__total-price" data-cart-total>
+            {{ cart.total_price | plus: 1000 | money }}
+          </span>
+        </div>
+      </div>
+
+      <a href="{{ routes.cart_url }}" class="cart-drawer__checkout">
+        Proceder al Pago
+      </a>
+    </div>
+  {% else %}
+    <div class="cart-drawer__empty">
+      <div class="cart-drawer__empty-icon">🛒</div>
+      <p class="cart-drawer__empty-text">Tu carrito está vacío</p>
+      <button type="button" class="cart-drawer__empty-button" data-cart-close>
+        Continuar Comprando
+      </button>
+    </div>
+  {% endif %}
+</div>
+
+<style>
+  .cart-drawer {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 100%;
+    max-width: 28rem;
+    height: 100vh;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: rgba(15, 23, 42, 0.95);
+    border-left: 1px solid rgba(251, 191, 36, 0.2);
+    z-index: 9999;
+    transition: right 0.3s;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cart-drawer.active {
+    right: 0;
+  }
+
+  .cart-drawer__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .cart-drawer__title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .cart-drawer__count {
+    width: 32px;
+    height: 32px;
+    background: #fbbf24;
+    color: #0f172a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+
+  .cart-drawer__title {
+    color: white;
+    font-size: 1.25rem;
+  }
+
+  .cart-drawer__close {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    transition: background 0.2s;
+  }
+
+  .cart-drawer__close:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .cart-drawer__content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cart-drawer__items {
+    flex: 1;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .cart-item {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(251, 191, 36, 0.1);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+  }
+
+  .cart-item__image {
+    width: 80px;
+    height: 107px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+    flex-shrink: 0;
+  }
+
+  .cart-item__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .cart-item__details {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .cart-item__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .cart-item__vendor {
+    color: #fbbf24;
+    font-size: 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .cart-item__title {
+    color: white;
+    font-size: 0.875rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cart-item__remove {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    border-radius: 0.25rem;
+    flex-shrink: 0;
+    transition: color 0.2s;
+  }
+
+  .cart-item__remove:hover {
+    color: #ef4444;
+  }
+
+  .cart-item__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .cart-item__quantity {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(251, 191, 36, 0.1);
+    border-radius: 0.5rem;
+    padding: 0.25rem;
+  }
+
+  .cart-item__quantity-btn {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    transition: background 0.2s;
+  }
+
+  .cart-item__quantity-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .cart-item__quantity-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .cart-item__quantity-value {
+    color: white;
+    min-width: 2rem;
+    text-align: center;
+    font-size: 0.875rem;
+  }
+
+  .cart-item__price {
+    color: white;
+    font-weight: 500;
+  }
+
+  .cart-drawer__footer {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .cart-drawer__totals {
+    margin-bottom: 1.5rem;
+  }
+
+  .cart-drawer__subtotal,
+  .cart-drawer__shipping,
+  .cart-drawer__total {
+    display: flex;
+    justify-content: space-between;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 0.5rem;
+  }
+
+  .cart-drawer__separator {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0.75rem 0;
+  }
+
+  .cart-drawer__total {
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+
+  .cart-drawer__total-price {
+    color: #fbbf24;
+  }
+
+  .cart-drawer__checkout {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    background: #fbbf24;
+    color: #0f172a;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+
+  .cart-drawer__checkout:hover {
+    background: #f59e0b;
+  }
+
+  .cart-drawer__empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+    text-align: center;
+  }
+
+  .cart-drawer__empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+
+  .cart-drawer__empty-text {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .cart-drawer__empty-button {
+    padding: 0.75rem 1.5rem;
+    background: #fbbf24;
+    color: #0f172a;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .cart-drawer__empty-button:hover {
+    background: #f59e0b;
+  }
+
+  .cart-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 9998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .cart-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+</style>

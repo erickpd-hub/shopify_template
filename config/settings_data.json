@@ -1,0 +1,141 @@
+{
+  "current": {
+    "color_background": "#0f172a",
+    "color_text": "#ffffff",
+    "color_accent": "#fbbf24",
+    "color_accent_text": "#0f172a",
+    "body_font": "assistant_n4",
+    "heading_font": "assistant_n4",
+    "page_width": 1200,
+    "show_vendor": true,
+    "show_product_type": true,
+    "image_ratio": "portrait",
+    "cart_type": "drawer",
+    "cart_notes_enable": false,
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {
+          "logo_letter": "A",
+          "store_name": "AROMA"
+        },
+        "blocks": {
+          "season_1": {
+            "type": "season_link",
+            "settings": {
+              "title": "Primavera",
+              "emoji": "🌸",
+              "link": "/collections/primavera"
+            }
+          },
+          "season_2": {
+            "type": "season_link",
+            "settings": {
+              "title": "Verano",
+              "emoji": "☀️",
+              "link": "/collections/verano"
+            }
+          },
+          "season_3": {
+            "type": "season_link",
+            "settings": {
+              "title": "Otoño",
+              "emoji": "🍂",
+              "link": "/collections/otono"
+            }
+          },
+          "season_4": {
+            "type": "season_link",
+            "settings": {
+              "title": "Invierno",
+              "emoji": "❄️",
+              "link": "/collections/invierno"
+            }
+          },
+          "nav_1": {
+            "type": "nav_link",
+            "settings": {
+              "title": "Nuevo",
+              "link": "/collections/nuevos"
+            }
+          },
+          "nav_2": {
+            "type": "nav_link",
+            "settings": {
+              "title": "Ofertas",
+              "link": "/collections/ofertas"
+            }
+          }
+        },
+        "block_order": [
+          "season_1",
+          "season_2",
+          "season_3",
+          "season_4",
+          "nav_1",
+          "nav_2"
+        ]
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {
+          "logo_letter": "A",
+          "store_name": "AROMA",
+          "footer_description": "Fragancias masculinas de lujo para cada estación del año",
+          "email": "contacto@aroma.com",
+          "phone": "+34 900 123 456",
+          "address": "Madrid, España",
+          "copyright_text": "Todos los derechos reservados.",
+          "show_payment_icons": true
+        },
+        "blocks": {
+          "footer_1": {
+            "type": "link_list",
+            "settings": {
+              "heading": "Colecciones",
+              "link_label_1": "Primavera 🌸",
+              "link_1": "/collections/primavera",
+              "link_label_2": "Verano ☀️",
+              "link_2": "/collections/verano",
+              "link_label_3": "Otoño 🍂",
+              "link_3": "/collections/otono",
+              "link_label_4": "Invierno ❄️",
+              "link_4": "/collections/invierno"
+            }
+          },
+          "footer_2": {
+            "type": "link_list",
+            "settings": {
+              "heading": "Comprar",
+              "link_label_1": "Nueva Colección",
+              "link_1": "/collections/nuevos",
+              "link_label_2": "Ofertas",
+              "link_2": "/collections/ofertas",
+              "link_label_3": "Todos los Productos",
+              "link_3": "/collections/all"
+            }
+          },
+          "footer_3": {
+            "type": "link_list",
+            "settings": {
+              "heading": "Ayuda",
+              "link_label_1": "Contacto",
+              "link_1": "/pages/contacto",
+              "link_label_2": "Envíos",
+              "link_2": "/pages/envios",
+              "link_label_3": "Devoluciones",
+              "link_3": "/pages/devoluciones",
+              "link_label_4": "FAQ",
+              "link_4": "/pages/faq"
+            }
+          }
+        },
+        "block_order": [
+          "footer_1",
+          "footer_2",
+          "footer_3"
+        ]
+      }
+    }
+  }
+}

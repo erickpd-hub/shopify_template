@@ -1,0 +1,294 @@
+{% comment %}
+  Renders a product card
+
+  Accepts:
+  - product: {Object} Product Liquid object
+
+  Usage:
+  {% render 'product-card', product: product %}
+{% endcomment %}
+
+<div class="product-card">
+  <a href="{{ product.url }}" class="product-card__link">
+    <div class="product-card__image-wrapper">
+      {% if product.featured_image %}
+        <img
+          srcset="
+            {{ product.featured_image | image_url: width: 300 }} 300w,
+            {{ product.featured_image | image_url: width: 600 }} 600w
+          "
+          src="{{ product.featured_image | image_url: width: 600 }}"
+          alt="{{ product.featured_image.alt | escape }}"
+          class="product-card__image"
+          loading="lazy"
+          width="600"
+          height="800"
+        >
+      {% else %}
+        {{ 'product-1' | placeholder_svg_tag: 'product-card__image product-card__image--placeholder' }}
+      {% endif %}
+
+      {% if product.available == false %}
+        <div class="product-card__badge product-card__badge--sold-out">
+          Agotado
+        </div>
+      {% elsif product.compare_at_price > product.price %}
+        <div class="product-card__badge product-card__badge--sale">
+          -{{ product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round }}%
+        </div>
+      {% elsif product.metafields.custom.new_product == true %}
+        <div class="product-card__badge product-card__badge--new">
+          Nuevo
+        </div>
+      {% endif %}
+
+      <div class="product-card__overlay">
+        <button 
+          type="button"
+          class="product-card__quick-add"
+          data-product-id="{{ product.id }}"
+          {% unless product.available %}disabled{% endunless %}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="9" cy="21" r="1"/>
+            <circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+          <span>Agregar al Carrito</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="product-card__info">
+      {% if product.vendor %}
+        <div class="product-card__vendor">{{ product.vendor }}</div>
+      {% endif %}
+
+      <h3 class="product-card__title">{{ product.title }}</h3>
+
+      {% if product.metafields.custom.product_type %}
+        <div class="product-card__type">{{ product.metafields.custom.product_type }}</div>
+      {% endif %}
+
+      <div class="product-card__price-wrapper">
+        <div class="product-card__prices">
+          <span class="product-card__price">
+            {{ product.price | money }}
+          </span>
+          {% if product.compare_at_price > product.price %}
+            <span class="product-card__price product-card__price--compare">
+              {{ product.compare_at_price | money }}
+            </span>
+          {% endif %}
+        </div>
+
+        <button 
+          type="button"
+          class="product-card__cart-button"
+          data-product-id="{{ product.id }}"
+          {% unless product.available %}disabled{% endunless %}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="9" cy="21" r="1"/>
+            <circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </a>
+</div>
+
+<style>
+  .product-card {
+    position: relative;
+  }
+
+  .product-card__link {
+    display: block;
+    text-decoration: none;
+  }
+
+  .product-card__link:hover .product-card__image {
+    transform: scale(1.05);
+  }
+
+  .product-card__link:hover .product-card__overlay {
+    opacity: 1;
+  }
+
+  .product-card__image-wrapper {
+    position: relative;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    border-radius: 1rem;
+    background: linear-gradient(to bottom right, #1e293b, #0f172a);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(251, 191, 36, 0.1);
+    margin-bottom: 1.25rem;
+  }
+
+  .product-card:hover .product-card__image-wrapper {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(251, 191, 36, 0.3);
+    box-shadow: 0 20px 25px -5px rgba(251, 191, 36, 0.1);
+  }
+
+  .product-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+  }
+
+  .product-card__image--placeholder {
+    opacity: 0.3;
+  }
+
+  .product-card__badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 10;
+  }
+
+  .product-card__badge--new {
+    background: #fbbf24;
+    color: #0f172a;
+  }
+
+  .product-card__badge--sale {
+    background: #ef4444;
+    color: white;
+  }
+
+  .product-card__badge--sold-out {
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+  }
+
+  .product-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .product-card__quick-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: #fbbf24;
+    color: #0f172a;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .product-card__quick-add:hover {
+    background: #f59e0b;
+    transform: scale(1.05);
+  }
+
+  .product-card__quick-add:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .product-card__quick-add svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .product-card__info {
+    padding: 0 0.25rem;
+  }
+
+  .product-card__vendor {
+    color: #fbbf24;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .product-card__title {
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .product-card__type {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+
+  .product-card__price-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .product-card__prices {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .product-card__price {
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+
+  .product-card__price--compare {
+    color: rgba(255, 255, 255, 0.4);
+    text-decoration: line-through;
+    font-size: 0.875rem;
+  }
+
+  .product-card__cart-button {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fbbf24;
+    color: #0f172a;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .product-card__cart-button:hover {
+    background: #f59e0b;
+    transform: scale(1.1);
+  }
+
+  .product-card__cart-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .product-card__cart-button svg {
+    width: 16px;
+    height: 16px;
+  }
+</style>

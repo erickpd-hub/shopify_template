@@ -1,0 +1,78 @@
+<section class="main-article section-spacing">
+  <div class="container">
+    <article class="article-content">
+      <header class="article-header">
+        <h1 class="article-title">{{ article.title }}</h1>
+        <div class="article-meta">
+          <span>by {{ article.author }}</span>
+          <span>on {{ article.published_at | date: "%B %d, %Y" }}</span>
+        </div>
+      </header>
+
+      {% if article.image %}
+        <div class="article-image">
+          <img src="{{ article.image | img_url: 'large' }}" alt="{{ article.image.alt | escape }}" width="{{ article.image.width }}" height="{{ article.image.height }}">
+        </div>
+      {% endif %}
+
+      <div class="article-body">
+        {{ article.content }}
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  .article-content {
+    max-width: 80ch;
+    margin: 0 auto;
+  }
+
+  .article-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .article-title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .article-meta {
+    color: #a1a1aa;
+  }
+
+  .article-meta span {
+    margin: 0 0.5rem;
+  }
+
+  .article-image {
+    margin-bottom: 2rem;
+  }
+
+  .article-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+  }
+
+  .article-body {
+    color: #a1a1aa;
+  }
+
+  .article-body a {
+    color: #fbbf24;
+    text-decoration: none;
+  }
+
+  .article-body a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Main Article",
+  "settings": []
+}
+{% endschema %}
